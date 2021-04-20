@@ -1,0 +1,60 @@
+version: '3'
+
+#local:docker
+services:
+    #PHP Service
+    app:
+        build:
+            context: php
+            dockerfile: Dockerfile
+        container_name: app
+        # ports: 9000:9000
+        volumes:
+            - ./src:/var/www
+            - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        networks:
+            - app-network
+  
+    #Nginx Service
+    webserver:
+        image: nginx:latest
+        container_name: webserver
+        volumes: 
+            - ./src:/var/www
+            - ./nginx/conf.d/:/etc/nginx/conf.d/
+        ports:
+            - 8080:80
+            - 443:443
+        networks:
+            - app-network
+
+    #MySQL Service
+    db:
+        image: mysql:5.7.22
+        container_name: db
+        volumes: 
+            - mysql:/var/lib/mysql
+            - ./mysql/my.cnf:/etc/mysql/my.cnf
+        restart: unless-stopped
+        tty: true
+        ports:
+            - "8889:3306"
+        environment:
+            MYSQL_DATABASE: app_db
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_PASSWORD: root
+            MYSQL_USER: root
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        networks:
+            - app-network
+
+#Docker Networks
+networks:
+    app-network:
+        driver: bridge
+
+#Volumes
+volumes:
+    mysql:
+        driver: local
