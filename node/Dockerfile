@@ -1,11 +1,29 @@
 FROM node:latest
 
 RUN mkdir -p /usr/src
+# RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
 # RUN npm install nodemon -g
 
 WORKDIR /usr/src
 
-COPY package.json .
+RUN adduser -S node
+
+COPY package*.json .
+
+RUN chown -R node /usr/src
+
+USER node
+
+
+COPY /src .
+
 RUN npm install
-COPY . /usr/src
+# RUN npm ci --only=production && npm cache clean --force
+
+
+COPY --chown=node:node . .
+
+EXPOSE 5000
+
+CMD [ "node", "app.js" ]
