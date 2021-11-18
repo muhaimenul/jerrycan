@@ -15,15 +15,14 @@ RUN chown -R node /usr/src
 
 USER node
 
-
-COPY /src .
+COPY /src /usr/src
 
 RUN npm install
 # RUN npm ci --only=production && npm cache clean --force
 
-
-COPY --chown=node:node . .
+# COPY --chown=node:node . .
 
 EXPOSE 5000
 
-CMD [ "node", "app.js" ]
+#  CMD [ "node", "app.js" ]
+CMD ["npm", "run", "start"]
