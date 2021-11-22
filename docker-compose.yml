@@ -15,7 +15,8 @@ services:
             - 49160:3000
         networks:
             - app-network
-  
+        depends_on: 
+            - db
     # Nginx Service
     # webserver:
     #     image: nginx:latest
@@ -51,6 +52,19 @@ services:
     #         SERVICE_NAME: mysql
     #     networks:
     #         - app-network
+
+    db:
+        image: mongo:4.1.8-xenial
+        container_name: db
+        restart: unless-stopped
+        env_file: .env
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
+            - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+        volumes:
+            - dbdata:/data/db
+        networks:
+            - app-network
 
 #Docker Networks
 networks:
