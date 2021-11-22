@@ -5,13 +5,14 @@ services:
     #node Service
     app:
         build:
-            context: node
-            dockerfile: Dockerfile
+            context: ./
+            dockerfile: ./node/Dockerfile
         container_name: app #nodejs
-        ports: 3000:3000
         volumes:
-            - ./src:/usr/src
-            - /usr/src/node_modules
+            - ./src:/usr/app/src
+            - /usr/app/src/node_modules
+        ports: 
+            - 49160:3000
         networks:
             - app-network
   
@@ -57,5 +58,5 @@ networks:
         driver: bridge
 
 #Volumes
-volumes:
+# volumes:
     # mysql:

@@ -1,32 +1,36 @@
-FROM node:16
+FROM node:16 
+# as base
 
 RUN mkdir -p /usr/app/src
 # RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
-# RUN npm install nodemon -g
 
 WORKDIR /usr/app/src
 
+COPY /src/package*.json .
 
-COPY package*.json .
+COPY . /usr/app/src
 
-COPY . /usr/src
+# FROM base as production
+# ENV NODE_ENV=production
+# RUN npm ci --only=production && npm cache clean --force
+# CMD ["node", "bin/www"]
 
+
+# FROM base as dev
+# ENV NODE_ENV=development
 RUN npm install -g nodemon && npm install
+
 
 RUN adduser --system --group app
 
 RUN chown -R app /usr/app/src
+# COPY --chown=app:app . .
 
 USER app
 
 
-# RUN npm ci --only=production && npm cache clean --force
-
-# COPY --chown=node:node . .
-
 EXPOSE 3000
 
-# CMD [ "node", "bin/www" ]
 # CMD ["npm", "run", "start"]
 CMD ["nodemon", "bin/www"]
