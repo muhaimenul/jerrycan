@@ -2,10 +2,10 @@ version: '3.8'
 
 #local:docker
 services:
-    #node Service
+    #nodejs Service
     app:
         build:
-            context: ./
+            context: .
             dockerfile: ./node/Dockerfile
         container_name: app #nodejs
         volumes:
@@ -54,13 +54,15 @@ services:
     #         - app-network
 
     db:
-        image: mongo:4.1.8-xenial
+        image: mongo:5.0-focal
         container_name: db
         restart: unless-stopped
         env_file: .env
         environment:
             - MONGO_INITDB_ROOT_USERNAME=$MONGO_USERNAME
             - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+        ports:
+            - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
         volumes:
             - dbdata:/data/db
         networks:
@@ -72,5 +74,5 @@ networks:
         driver: bridge
 
 #Volumes
-# volumes:
-    # mysql:
+volumes:
+    dbdata:
