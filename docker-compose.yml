@@ -7,52 +7,19 @@ services:
         build:
             context: .
             dockerfile: ./node/Dockerfile
-        container_name: app #nodejs
+        container_name: app
         volumes:
             - ./src:/usr/app/src
             - /usr/app/src/node_modules
+            # - /src/node_modules:/usr/app/src/node_modules
         ports: 
             - 49160:3000
         networks:
             - app-network
         depends_on: 
             - db
-    # Nginx Service
-    # webserver:
-    #     image: nginx:latest
-    #     container_name: webserver
-    #     volumes: 
-    #         - ./src:/var/www
-    #         - ./nginx/conf.d/:/etc/nginx/conf.d/
-    #     ports:
-    #         - 8080:80
-    #         - 443:443
-    #     networks:
-    #         - app-network
 
-    # #MySQL/MongoDB Service
-    # db:
-    #     image: mysql:5.7.22
-    #     container_name: db
-    #     env_file: ./.env
-    #     volumes: 
-    #         - mysql:/var/lib/mysql
-    #         - ./mysql/my.cnf:/etc/mysql/my.cnf
-    #     restart: unless-stopped
-    #     tty: true
-    #     ports:
-    #         # - "8889:3306"
-    #         - $MYSQL_LOCAL_PORT:$MYSQL_DOCKER_PORT
-    #     environment:
-    #         MYSQL_DATABASE: app_db
-    #         MYSQL_ROOT_PASSWORD: root
-    #         MYSQL_PASSWORD: root
-    #         MYSQL_USER: root
-    #         SERVICE_TAGS: dev
-    #         SERVICE_NAME: mysql
-    #     networks:
-    #         - app-network
-
+    #mongodb Service
     db:
         image: mongo:5.0-focal
         container_name: db
@@ -61,6 +28,7 @@ services:
         environment:
             - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USERNAME
             - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+            - MONGO_INITDB_DATABASE=$MONGODB_DB
         ports:
             - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
         volumes:
