@@ -9,14 +9,15 @@ services:
             dockerfile: ./node/Dockerfile
         container_name: app
         volumes:
-            - ./src:/usr/app/src
-            - /usr/app/src/node_modules
+            - ./src:/usr/src/app
+            - /usr/src/app/node_modules
             # - /src/node_modules:/usr/app/src/node_modules
         ports: 
             - 49160:3000
         networks:
             - app-network
-            
+        command: npm start
+
 #Docker Networks
 networks:
     app-network:
